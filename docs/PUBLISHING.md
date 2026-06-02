@@ -90,8 +90,8 @@ Render setup:
 Render will use:
 
 ```text
-Build command: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @watch-party-sync/server build
-Start command: corepack enable && pnpm --filter @watch-party-sync/server start
+Build command: pnpm install --frozen-lockfile && pnpm --filter @watch-party-sync/server build
+Start command: pnpm --filter @watch-party-sync/server start
 Health check: /health
 ```
 

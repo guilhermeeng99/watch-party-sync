@@ -7,8 +7,8 @@ services:
     branch: main
     autoDeploy: true
     healthCheckPath: /health
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @watch-party-sync/server build
-    startCommand: corepack enable && pnpm --filter @watch-party-sync/server start
+    buildCommand: pnpm install --frozen-lockfile && pnpm --filter @watch-party-sync/server build
+    startCommand: pnpm --filter @watch-party-sync/server start
     envVars:
       - key: NODE_VERSION
         value: 24.14.1
