@@ -25,12 +25,20 @@ export async function loadSettings(): Promise<StoredSettings> {
     await browser.storage.local.set({ memberId });
   }
 
+  const displayName =
+    typeof stored.displayName === "string" && stored.displayName.trim()
+      ? stored.displayName.trim()
+      : "Friend";
+  if (stored.displayName !== displayName) {
+    await browser.storage.local.set({ displayName });
+  }
+
   const serverUrl = await resolveServerUrl(stored);
 
   return {
     serverUrl,
     memberId,
-    displayName: typeof stored.displayName === "string" ? stored.displayName : "Friend",
+    displayName,
     debug: typeof stored.debug === "boolean" ? stored.debug : false,
   };
 }

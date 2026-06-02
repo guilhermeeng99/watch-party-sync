@@ -19,7 +19,7 @@ pnpm --filter @watch-party-sync/extension zip
 Output:
 
 ```text
-extension/.output/watch-party-sync-0.1.1-chrome.zip
+extension/.output/watch-party-sync-0.1.2-chrome.zip
 ```
 
 The zip is the file to upload to GitHub Releases or the Chrome Web Store.
@@ -47,7 +47,7 @@ git add .
 git commit -m "Initial public release"
 gh repo create guilhermeeng99/watch-party-sync --public --source . --remote origin --push
 pnpm --filter @watch-party-sync/extension zip
-gh release create v0.1.1 extension/.output/watch-party-sync-0.1.1-chrome.zip --title "Watch Party Sync v0.1.1" --notes "Public test release with hosted Render server default."
+gh release create v0.1.2 extension/.output/watch-party-sync-0.1.2-chrome.zip --title "Watch Party Sync v0.1.2" --notes "Public test release with hosted Render server default and youtube.com host support."
 ```
 
 Friends can download the release zip. For manual install, they should unzip it and load the

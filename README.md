@@ -129,7 +129,7 @@ Build the Chrome extension package:
 pnpm --filter @watch-party-sync/extension zip
 ```
 
-Use the generated `extension/.output/watch-party-sync-0.1.1-chrome.zip` in either:
+Use the generated `extension/.output/watch-party-sync-0.1.2-chrome.zip` in either:
 
 - a GitHub Release for immediate public testing;
 - the Chrome Developer Dashboard for Chrome Web Store review.

@@ -5,7 +5,7 @@ import { applyPlaybackCommand } from "../src/sync/apply-command";
 import { renderOverlay } from "../src/ui/overlay";
 
 export default defineContentScript({
-  matches: ["https://www.youtube.com/*", "https://www.crunchyroll.com/*"],
+  matches: ["https://www.youtube.com/*", "https://youtube.com/*", "https://www.crunchyroll.com/*"],
   async main() {
     const adapter = await initializeAdapter();
     let serverOffsetMs = 0;
