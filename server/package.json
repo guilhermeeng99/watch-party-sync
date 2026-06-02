@@ -1,0 +1,24 @@
+{
+  "name": "@watch-party-sync/server",
+  "version": "0.1.0",
+  "type": "module",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "pnpm --filter @watch-party-sync/protocol build && tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "dev": "pnpm --filter @watch-party-sync/protocol build && tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "pnpm --filter @watch-party-sync/protocol build && vitest run"
+  },
+  "dependencies": {
+    "@watch-party-sync/protocol": "workspace:*",
+    "socket.io": "^4.8.1",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "tsx": "^4.20.6",
+    "vitest": "^3.2.4"
+  }
+}

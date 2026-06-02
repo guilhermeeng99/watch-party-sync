@@ -1,0 +1,19 @@
+{
+  "name": "watch-party-sync",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm -r --sort build",
+    "check": "pnpm -r --sort --if-present check && pnpm dlx @biomejs/biome@1.9.4 ci .",
+    "dev:extension": "pnpm --filter @watch-party-sync/extension dev",
+    "dev:server": "pnpm --filter @watch-party-sync/server dev",
+    "test": "pnpm -r --sort --if-present test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@11.5.0"
+}
