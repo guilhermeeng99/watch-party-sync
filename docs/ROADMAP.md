@@ -23,11 +23,11 @@ sharing, and no DRM or service-limit bypass.
 | B | Workspace + shared protocol | ✅ Done |
 | C | Realtime room server | ✅ Done |
 | D | Chrome extension shell | ✅ Done |
-| E | YouTube MVP | 🚧 code done; real-page validation pending |
+| E | YouTube MVP | 🚧 public test build released; multi-user validation ongoing |
 | F | Sync quality + drift correction | ✅ Done |
 | G | Private group hardening | 🚧 initial hardening done |
 | H | Crunchyroll connector | 🚧 code done; real-page validation pending |
-| I | Open-source readiness | 🚧 initial repo hygiene done |
+| I | Open-source readiness | 🚧 public repo/release done; store polish pending |
 | J | Netflix / Prime Video technical spikes | 💡 Backlog |
 
 ---
@@ -55,8 +55,9 @@ sharing, and no DRM or service-limit bypass.
 
 - 🚧 **E - YouTube MVP**: code exists for YouTube video-id detection, primary local video element
   control, playback state reads, play/pause/seek/rate operations, SPA route observation, room
-  membership, and command application. **Remaining:** validate with two Chrome profiles or two
-  computers on real YouTube pages, including reload, route change, pause, seek, and reconnect.
+  membership, and command application. Public release `v0.1.2` supports both `youtube.com` and
+  `www.youtube.com`. **Remaining:** validate with two Chrome profiles or two computers on real
+  YouTube pages, including join, reload, route change, pause, seek, and reconnect.
 
 - ✅ **F - Sync quality + drift correction**: server-scheduled commands use `issuedAt` and
   `applyAt`; clients estimate server offset with ping/pong; late commands calculate target
@@ -75,8 +76,9 @@ sharing, and no DRM or service-limit bypass.
 
 - 🚧 **I - Open-source readiness**: initial hygiene is done: `README.md`, `CONTRIBUTING.md`,
   `SECURITY.md`, MIT license, issue templates, PR template, CI, Docker Compose, `.env.example`,
-  privacy/compliance spec, and design-system spec. **Remaining:** screenshots/GIFs, release
-  artifacts, manual install guide polish, and a first tagged release.
+  privacy/compliance spec, design-system spec, Render deployment docs, and GitHub Release
+  `v0.1.2`. **Remaining:** screenshots/GIFs, manual install guide screenshots/polish, Chrome Web
+  Store listing, and final project name.
 
 - 💡 **J - Netflix / Prime Video technical spikes**: not committed product features. Investigate
   only whether clean local playback control is possible without violating the product boundary.
@@ -90,21 +92,23 @@ sharing, and no DRM or service-limit bypass.
 - ✅ `pnpm test` passes.
 - ✅ `pnpm build` passes.
 - ✅ `pnpm check` passes.
+- ✅ `pnpm --filter @watch-party-sync/extension zip` produces `watch-party-sync-0.1.2-chrome.zip`.
+- ✅ GitHub Release `v0.1.2` is published with the Chrome zip artifact.
 - ✅ Markdown relative links validate.
 - ✅ Repo-authored text is ASCII except intentional roadmap/status icons.
-- ⬜ Manual browser validation with real provider pages.
+- 🚧 Manual YouTube browser validation with real provider pages.
 - ⬜ Multi-user test across separate machines.
 
 ---
 
 ## Next / open
 
-- 🚧 Validate YouTube with two Chrome profiles or two computers.
-- 🚧 Validate room sync through real play, pause, seek, reload, and reconnect flows.
+- 🚧 Validate YouTube join with two Chrome profiles or two computers on `v0.1.2`.
+- 🚧 Validate room sync through real play, pause, seek, reload, and reconnect flows over Render.
 - 🚧 Validate Crunchyroll with normal logged-in playback.
 - ⬜ Add screenshots/GIFs after real validation.
-- ⬜ Write a concise manual install guide for unpacked Chrome extension use.
-- ⬜ Decide release packaging: unpacked zip, GitHub Release zip, Chrome Web Store later.
+- ⬜ Polish the manual install guide with screenshots.
+- ⬜ Prepare Chrome Web Store listing and review submission.
 - ⬜ Choose final project name.
 - ⬜ Decide whether host transfer is needed for the friend group.
 

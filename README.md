@@ -7,9 +7,9 @@ video in sync while each person watches through the official player on their own
 share accounts, share cookies, bypass DRM, or bypass a service's plan/device limits. Every
 viewer must already be able to play the video in their own browser session.
 
-> Status: public testing package in progress. The extension and server build, protocol/server
-> tests pass, and YouTube/Generic HTML5/Crunchyroll adapters are scaffolded. YouTube popup
-> validation has started; multi-user validation is next.
+> Status: public test release `v0.1.2` is published. The extension defaults to the hosted
+> Render Free room server, YouTube supports both `youtube.com` and `www.youtube.com`, and
+> end-to-end multi-user validation is in progress.
 
 ## What It Will Do
 
@@ -20,11 +20,11 @@ Status: Done, In progress, Planned, Backlog. See [docs/ROADMAP.md](docs/ROADMAP.
 | Product docs, architecture, roadmap, specs | Done | Toolzy-style documentation |
 | Chrome extension shell | Done | Manifest V3, WXT, TypeScript |
 | Self-hosted realtime room server | Done | Node.js, TypeScript, Socket.IO |
-| YouTube sync MVP | Done | Implemented adapter; manual page validation pending |
-| Generic HTML5 video sync | Done | Localhost/127.0.0.1 test adapter |
+| YouTube sync MVP | Done | Public test build supports `youtube.com` and `www.youtube.com`; multi-user validation in progress |
+| Generic HTML5 video sync | In progress | Adapter exists; local content-script/demo wiring pending |
 | Drift correction | Done | Rate nudge for small drift, seek for large drift |
 | Friend mode pause | Done | Members can play/pause/rate; host owns seek |
-| Crunchyroll connector | Done | Initial adapter; manual page validation pending |
+| Crunchyroll connector | In progress | Initial adapter; real episode validation pending |
 | Netflix / Prime Video support | Backlog | Technical spikes only until proven reliable |
 | Voice / chat | Out of scope | Use Discord |
 
@@ -55,10 +55,14 @@ watch-party-sync/
       providers/        # YouTube, Generic HTML5, Crunchyroll, experimental providers
       sync/             # room client, protocol types, drift correction
       ui/               # popup and overlay components
+      shared/           # runtime messages, storage, permissions
   server/               # self-hosted realtime room server
     src/
+      config/           # environment parsing
       rooms/            # room lifecycle, members, permissions, control authority
-      protocol/         # shared event validation
+      transport/        # Socket.IO setup
+  packages/
+    protocol/           # shared event validation and sync timing helpers
   docs/
     ROADMAP.md
     specs/
@@ -137,6 +141,12 @@ Use the generated `extension/.output/watch-party-sync-0.1.2-chrome.zip` in eithe
 The public test build defaults to the hosted Render Free server. For a custom server, set that URL
 in the extension Options page. Chrome will ask for host access to that server when the URL is saved.
 
+Current public release:
+
+```text
+https://github.com/guilhermeeng99/watch-party-sync/releases/tag/v0.1.2
+```
+
 See [docs/PUBLISHING.md](docs/PUBLISHING.md) and [PRIVACY.md](PRIVACY.md).
 
 ### Render Free Server
@@ -147,8 +157,9 @@ This repo includes a Render Blueprint:
 render.yaml
 ```
 
-Use Render Dashboard > New > Blueprint, connect this repo, deploy `watch-party-sync-server`, then
-put the generated `https://...onrender.com` URL in the extension Options page.
+Use Render Dashboard > New > Blueprint, connect this repo, and deploy `watch-party-sync-server`.
+This project already uses `https://watch-party-sync-server.onrender.com` as the default extension
+server; the Options page is only needed when testing another local or self-hosted server.
 
 ## Documentation
 

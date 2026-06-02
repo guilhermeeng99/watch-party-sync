@@ -88,8 +88,10 @@ Host permissions should be added per provider:
 
 | Provider | Permission | Status |
 |---|---|---|
-| YouTube | `https://www.youtube.com/*` | Planned MVP |
-| Crunchyroll | `https://www.crunchyroll.com/*` | Planned |
+| YouTube | `https://www.youtube.com/*`, `https://youtube.com/*` | MVP |
+| Crunchyroll | `https://www.crunchyroll.com/*` | Initial implementation |
+| Hosted room server | `https://watch-party-sync-server.onrender.com/*` | Public test default |
+| Local room server | `http://localhost/*`, `http://127.0.0.1/*` | Local/self-hosted testing |
 | Netflix | `https://www.netflix.com/*` | Spike only |
 | Prime Video | `https://www.primevideo.com/*` | Spike only |
 

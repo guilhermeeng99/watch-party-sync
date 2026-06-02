@@ -62,7 +62,7 @@ popup UI
 options UI
   - server URL
   - debug mode
-  - provider enable/disable toggles
+  - future provider enable/disable toggles
 ```
 
 ---
@@ -117,10 +117,10 @@ Layer ownership:
 
 | Option | Type | Values / range | Default | Effect |
 |---|---|---|---|---|
-| Server URL | string URL | http(s)/ws(s) | local/dev URL until configured | Realtime endpoint |
+| Server URL | string URL | http(s)/ws(s) | `https://watch-party-sync-server.onrender.com` | Realtime endpoint |
 | Room mode | enum | `friend`, `host` | `friend` | Who can control playback |
 | Debug overlay | boolean | true/false | false | Shows drift, offset, provider state |
-| Provider enabled | boolean per provider | true/false | true for stable providers | Allows disabling fragile adapters |
+| Provider enabled | boolean per provider | true/false | Future option | Allows disabling fragile adapters |
 
 ---
 
@@ -130,9 +130,9 @@ Initial host permissions are narrow:
 
 | Provider | Host permission | Status |
 |---|---|---|
-| YouTube | `https://www.youtube.com/*` | MVP |
-| Generic test pages | Local/dev only | MVP support tool |
-| Crunchyroll | `https://www.crunchyroll.com/*` | Planned |
+| YouTube | `https://www.youtube.com/*`, `https://youtube.com/*` | MVP |
+| Generic test pages | Local/dev only | Adapter exists; content-script wiring pending |
+| Crunchyroll | `https://www.crunchyroll.com/*` | Initial implementation |
 | Netflix | `https://www.netflix.com/*` | Experimental spike only |
 | Prime Video | `https://www.primevideo.com/*` | Experimental spike only |
 
@@ -216,6 +216,6 @@ Overlay should be optional and compact:
 
 - Firefox and Safari.
 - Mobile browsers.
-- Chrome Web Store publishing in the first implementation.
+- Chrome Web Store review/submission until public testing stabilizes.
 - Voice or chat.
 - Provider account management.

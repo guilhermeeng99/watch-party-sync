@@ -22,9 +22,9 @@ websites. They are intentionally isolated because streaming websites change ofte
 
 | Provider | Status | Strategy | Risk |
 |---|---|---|---|
-| YouTube | Implemented, manual validation pending | HTML5 video element; stable media key from video id | Low |
-| Generic HTML5 | Implemented | Direct `<video>` control on local test/simple pages | Low |
-| Crunchyroll | Implemented, manual validation pending | HTML5 video element if accessible; route detection | Medium |
+| YouTube | Implemented; public test validation ongoing | HTML5 video element; stable media key from video id; `youtube.com` and `www.youtube.com` hosts | Low |
+| Generic HTML5 | Adapter implemented; local wiring pending | Direct `<video>` control on local test/simple pages | Low |
+| Crunchyroll | Initial implementation; real-page validation pending | HTML5 video element if accessible; route detection | Medium |
 | Netflix | Backlog spike | Local player control only if accessible without bypass | High |
 | Prime Video | Backlog spike | Local player control only if accessible without bypass | High |
 
@@ -96,6 +96,7 @@ Initial target.
 
 - Media key: YouTube video id.
 - Player: primary visible `<video>` element on watch pages.
+- Host coverage: `https://youtube.com/*` and `https://www.youtube.com/*`.
 - Route changes: YouTube is a SPA; observe URL/media changes.
 - Known risk: ads, autoplay restrictions, miniplayer, Shorts.
 
@@ -138,7 +139,7 @@ Backlog technical spike.
 
 | Option | Type | Default | Effect |
 |---|---|---|---|
-| Provider enabled | boolean | true for stable providers | Allows disabling fragile adapters |
+| Provider enabled | boolean | Future option | Allows disabling fragile adapters |
 | Detection timeout | ms | `10000` | Time to wait for lazy player |
 | State throttle | ms | `500` | Minimum interval between state reports |
 | Route debounce | ms | `300` | Avoid duplicate mediachange events |

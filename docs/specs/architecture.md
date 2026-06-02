@@ -30,7 +30,7 @@ The extension runs beside the official player and controls only local playback. 
 relays validated room events and scheduled playback commands. The server never receives media
 content.
 
-Planned repo shape:
+Current repo shape:
 
 ```text
 extension/
@@ -40,9 +40,12 @@ extension/
   src/ui/
   src/shared/
 server/
-  src/protocol/
+  src/index.ts
+  src/config/
   src/rooms/
   src/transport/
+packages/protocol/
+  src/
 docs/
   ROADMAP.md
   specs/
@@ -160,17 +163,18 @@ time and apply commands at the scheduled local time.
 - Room codes are temporary.
 - Abuse controls are basic until a public service exists.
 
-### ADR-008: Manual install before Chrome Web Store
+### ADR-008: GitHub release before Chrome Web Store
 
 **Status:** Accepted - 2026-06-02
 
-**Decision.** Validate the first versions as an unpacked extension used by the private group.
-Chrome Web Store packaging is later work.
+**Decision.** Validate the first versions through GitHub Release zip artifacts loaded manually
+as an unpacked extension. Chrome Web Store submission is later work after public testing is
+stable.
 
 **Consequences.**
 
 - Faster iteration.
-- Store review is not a blocker for the first working version.
+- Store review is not a blocker for the public test release.
 - Permission and privacy docs should still be written as if store review will happen.
 
 ---

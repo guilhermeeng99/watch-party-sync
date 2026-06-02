@@ -92,7 +92,7 @@ No media content, cookies, credentials, or account data may appear in server sta
 | `ROOM_TTL_SECONDS` | number | `21600` | Maximum room lifetime |
 | `EMPTY_ROOM_TTL_SECONDS` | number | `300` | Cleanup delay after last disconnect |
 | `COMMAND_DELAY_MS` | number | `1500` | Default future `applyAt` delay |
-| `CORS_ORIGIN` | string | extension/dev origins | Allowed clients |
+| `CORS_ORIGIN` | string | `*` | Allowed clients |
 | `LOG_LEVEL` | enum | `info` | Server logs |
 
 ---

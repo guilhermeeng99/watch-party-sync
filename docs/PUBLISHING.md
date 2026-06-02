@@ -41,6 +41,15 @@ Then in Chrome:
 
 Use this when you want friends to test before Chrome Web Store review.
 
+Current public release:
+
+```text
+https://github.com/guilhermeeng99/watch-party-sync/releases/tag/v0.1.2
+https://github.com/guilhermeeng99/watch-party-sync/releases/download/v0.1.2/watch-party-sync-0.1.2-chrome.zip
+```
+
+Future release command shape:
+
 ```bash
 git init
 git add .
@@ -107,19 +116,16 @@ Expected response:
 {"ok":true}
 ```
 
-The public test extension defaults to:
-
-```text
-https://<your-render-service>.onrender.com
-```
-
-For this project, the current hosted server is:
+The `v0.1.2` public test extension defaults to the current hosted server:
 
 ```text
 https://watch-party-sync-server.onrender.com
 ```
 
-Users only need the Options page when they want to override the default server.
+Users only need the Options page when they want to override that default server for local or
+self-hosted testing. Forks that want their own default hosted server should change
+`DEFAULT_SERVER_URL` in `extension/src/shared/server-permissions.ts`, rebuild the extension, and
+publish a new zip.
 
 Render Free notes:
 
@@ -166,7 +172,7 @@ Permission justifications:
 |---|---|
 | `storage` | Saves server URL, display name, member id, and debug preference locally. |
 | `activeTab` | Reads the currently selected supported video tab when the user opens the popup. |
-| YouTube host access | Runs the content script only on supported YouTube watch pages. |
+| YouTube host access | Runs the content script only on supported `youtube.com` and `www.youtube.com` watch pages. |
 | Crunchyroll host access | Runs the content script only on supported Crunchyroll watch pages. |
 | localhost/127.0.0.1 host access | Lets users test with a self-hosted local room server. |
 | optional server host access | Lets users connect to their configured self-hosted room server. |
@@ -187,6 +193,16 @@ cookies, credentials, payment data, browsing history, analytics, or telemetry.
 ```
 
 ## 6. Release Checklist
+
+Current `v0.1.2` release verification completed:
+
+- [x] `pnpm test`
+- [x] `pnpm build`
+- [x] `pnpm check`
+- [x] `pnpm --filter @watch-party-sync/extension zip`
+- [x] Upload zip to GitHub Release.
+
+Per-release checklist:
 
 - [ ] `pnpm test`
 - [ ] `pnpm build`

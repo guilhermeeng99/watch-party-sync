@@ -194,7 +194,7 @@ Compact, status-specific:
 
 ## 8. Popup Layout
 
-Popup target width: 360px to 380px. Max height should stay around 560px so the extension does
+Popup target width: 340px. Max height should stay around 560px so the extension does
 not feel like a clipped page in Chrome's popup surface.
 
 ```text

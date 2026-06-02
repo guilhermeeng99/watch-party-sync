@@ -45,10 +45,12 @@ extension/
 
 server/
   src/
-    protocol/           # shared event schemas and validation
     rooms/              # room lifecycle, members, modes, authority
     transport/          # Socket.IO setup
     config/             # env parsing
+
+packages/
+  protocol/             # shared event schemas, validation, and sync timing helpers
 
 docs/
   ROADMAP.md
@@ -63,8 +65,8 @@ Layer rules:
 - **UI** owns display and user actions only. It calls typed sync/provider APIs.
 - **Server** relays and validates room events. It never sees media content and does not persist
   room history in the MVP.
-- **Shared protocol types** should be generated or imported from one package once the repo is
-  scaffolded. Do not duplicate event shapes manually.
+- **Shared protocol types** must come from `packages/protocol`. Do not duplicate event shapes
+  manually.
 
 ---
 
@@ -144,7 +146,7 @@ Default for private friend usage: **Friend mode**.
 
 - Follow [docs/specs/design-system.md](docs/specs/design-system.md).
 - Use Montserrat through the `font-gilroy` token.
-- Keep popup UI compact: stable 360px to 400px width, 8px radius, 40px hit targets.
+- Keep popup UI compact: stable 340px width, 8px radius, 34px to 40px hit targets.
 - Use `action-blue` only for primary actions and focus rings.
 - Use cards only for actual tool panels. Do not put cards inside cards.
 - Use icons for common controls where a recognizable icon exists.
