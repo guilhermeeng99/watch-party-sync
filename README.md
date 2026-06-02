@@ -113,6 +113,14 @@ CORS_ORIGIN=*
 Load the extension in Chrome from `extension/.output/chrome-mv3` after running the extension
 dev/build command.
 
+Extension default room server:
+
+```text
+https://watch-party-sync-server.onrender.com
+```
+
+Users can still override this in the extension Options page for local or self-hosted testing.
+
 ## Public Testing
 
 Build the Chrome extension package:
@@ -121,13 +129,13 @@ Build the Chrome extension package:
 pnpm --filter @watch-party-sync/extension zip
 ```
 
-Use the generated `extension/.output/watch-party-sync-0.1.0-chrome.zip` in either:
+Use the generated `extension/.output/watch-party-sync-0.1.1-chrome.zip` in either:
 
 - a GitHub Release for immediate public testing;
 - the Chrome Developer Dashboard for Chrome Web Store review.
 
-For friends outside your machine, deploy the room server to a public URL and set that URL in the
-extension Options page. Chrome will ask for host access to that server when the URL is saved.
+The public test build defaults to the hosted Render Free server. For a custom server, set that URL
+in the extension Options page. Chrome will ask for host access to that server when the URL is saved.
 
 See [docs/PUBLISHING.md](docs/PUBLISHING.md) and [PRIVACY.md](PRIVACY.md).
 

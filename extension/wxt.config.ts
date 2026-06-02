@@ -6,7 +6,7 @@ export default defineConfig({
     name: "Watch Party Sync",
     short_name: "Watch Party",
     description: "Synchronize local playback with friends across official video players.",
-    version: "0.1.0",
+    version: "0.1.1",
     homepage_url: "https://github.com/guilhermeeng99/watch-party-sync",
     icons: {
       "16": "icons/icon-16.png",
@@ -18,6 +18,7 @@ export default defineConfig({
     host_permissions: [
       "https://www.youtube.com/*",
       "https://www.crunchyroll.com/*",
+      "https://watch-party-sync-server.onrender.com/*",
       "http://localhost/*",
       "http://127.0.0.1/*",
     ],

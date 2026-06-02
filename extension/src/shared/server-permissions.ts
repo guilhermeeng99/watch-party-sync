@@ -1,6 +1,6 @@
 import { browser } from "wxt/browser";
 
-const DEFAULT_SERVER_URL = "http://localhost:8787";
+export const DEFAULT_SERVER_URL = "https://watch-party-sync-server.onrender.com";
 
 export function normalizeServerUrl(serverUrl: string) {
   return serverUrl.trim().replace(/\/+$/, "") || DEFAULT_SERVER_URL;

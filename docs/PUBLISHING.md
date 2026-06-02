@@ -19,7 +19,7 @@ pnpm --filter @watch-party-sync/extension zip
 Output:
 
 ```text
-extension/.output/watch-party-sync-0.1.0-chrome.zip
+extension/.output/watch-party-sync-0.1.1-chrome.zip
 ```
 
 The zip is the file to upload to GitHub Releases or the Chrome Web Store.
@@ -47,7 +47,7 @@ git add .
 git commit -m "Initial public release"
 gh repo create guilhermeeng99/watch-party-sync --public --source . --remote origin --push
 pnpm --filter @watch-party-sync/extension zip
-gh release create v0.1.0 extension/.output/watch-party-sync-0.1.0-chrome.zip --title "Watch Party Sync v0.1.0" --notes "Initial public testing release."
+gh release create v0.1.1 extension/.output/watch-party-sync-0.1.1-chrome.zip --title "Watch Party Sync v0.1.1" --notes "Public test release with hosted Render server default."
 ```
 
 Friends can download the release zip. For manual install, they should unzip it and load the
@@ -107,11 +107,19 @@ Expected response:
 {"ok":true}
 ```
 
-Then open the extension Options page and set:
+The public test extension defaults to:
 
 ```text
 https://<your-render-service>.onrender.com
 ```
+
+For this project, the current hosted server is:
+
+```text
+https://watch-party-sync-server.onrender.com
+```
+
+Users only need the Options page when they want to override the default server.
 
 Render Free notes:
 

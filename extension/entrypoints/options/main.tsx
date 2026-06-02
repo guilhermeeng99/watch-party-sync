@@ -82,7 +82,7 @@ function OptionsApp() {
             <input
               className="input"
               value={serverUrl}
-              placeholder="http://localhost:8787"
+              placeholder="https://watch-party-sync-server.onrender.com"
               onChange={(event) => setServerUrl(event.target.value)}
             />
             <button className="button button-primary" type="button" onClick={saveServerUrl}>

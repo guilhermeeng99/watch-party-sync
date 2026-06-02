@@ -18,13 +18,17 @@ import {
   fail,
   ok,
 } from "../src/shared/runtime-messages";
-import { hasServerHostAccess, normalizeServerUrl } from "../src/shared/server-permissions";
+import {
+  DEFAULT_SERVER_URL,
+  hasServerHostAccess,
+  normalizeServerUrl,
+} from "../src/shared/server-permissions";
 import { loadSettings, saveSetting } from "../src/shared/storage";
 
 let socket: Socket | undefined;
 let clockTimer: number | undefined;
 let state: ExtensionState = {
-  serverUrl: "http://localhost:8787",
+  serverUrl: DEFAULT_SERVER_URL,
   memberId: "",
   displayName: "Friend",
   debug: false,
