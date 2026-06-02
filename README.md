@@ -131,6 +131,17 @@ extension Options page. Chrome will ask for host access to that server when the 
 
 See [docs/PUBLISHING.md](docs/PUBLISHING.md) and [PRIVACY.md](PRIVACY.md).
 
+### Render Free Server
+
+This repo includes a Render Blueprint:
+
+```text
+render.yaml
+```
+
+Use Render Dashboard > New > Blueprint, connect this repo, deploy `watch-party-sync-server`, then
+put the generated `https://...onrender.com` URL in the extension Options page.
+
 ## Documentation
 
 - [CLAUDE.md](CLAUDE.md) - project conventions for future agents and maintainers.

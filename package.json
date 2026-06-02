@@ -4,6 +4,10 @@
   "private": true,
   "type": "module",
   "license": "MIT",
+  "engines": {
+    "node": ">=24 <25",
+    "pnpm": "11.5.0"
+  },
   "scripts": {
     "build": "pnpm -r --sort build",
     "check": "pnpm -r --sort --if-present check && pnpm dlx @biomejs/biome@1.9.4 ci .",

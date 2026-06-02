@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: watch-party-sync-server
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    autoDeploy: true
+    healthCheckPath: /health
+    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @watch-party-sync/server build
+    startCommand: corepack enable && pnpm --filter @watch-party-sync/server start
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: LOG_LEVEL
+        value: info
+      - key: ROOM_TTL_SECONDS
+        value: "21600"
+      - key: EMPTY_ROOM_TTL_SECONDS
+        value: "300"
+      - key: COMMAND_DELAY_MS
+        value: "1500"

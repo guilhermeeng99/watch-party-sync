@@ -72,6 +72,54 @@ http://localhost:8787
 For real testing with friends outside the same computer, deploy the server somewhere reachable
 over the internet, preferably behind HTTPS.
 
+### Render Free
+
+The repository includes a `render.yaml` Blueprint for Render Free.
+
+Render setup:
+
+1. Open <https://dashboard.render.com>.
+2. Sign in with GitHub.
+3. Click **New > Blueprint**.
+4. Connect `guilhermeeng99/watch-party-sync`.
+5. Keep branch `main`.
+6. Confirm the service `watch-party-sync-server`.
+7. Make sure the plan is **Free**.
+8. Click **Deploy Blueprint**.
+
+Render will use:
+
+```text
+Build command: corepack enable && pnpm install --frozen-lockfile && pnpm --filter @watch-party-sync/server build
+Start command: corepack enable && pnpm --filter @watch-party-sync/server start
+Health check: /health
+```
+
+After deploy, open:
+
+```text
+https://<your-render-service>.onrender.com/health
+```
+
+Expected response:
+
+```json
+{"ok":true}
+```
+
+Then open the extension Options page and set:
+
+```text
+https://<your-render-service>.onrender.com
+```
+
+Render Free notes:
+
+- The server sleeps after idle time and can take around a minute to wake up.
+- Room data is in memory, so rooms disappear when the free service sleeps, restarts, or redeploys.
+- Active watch parties should stay awake while clients are connected and exchanging Socket.IO traffic.
+- The first person joining after idle should wait for `/health` to return before creating a room.
+
 Docker path:
 
 ```bash
