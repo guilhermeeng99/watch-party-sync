@@ -1,15 +1,43 @@
 name: Release
 
+# Publish a GitHub Release automatically whenever the version in package.json gains a tag that
+# does not exist yet. Bump the version, push to main, and once tests pass this builds the Chrome
+# and Firefox zips and attaches them to a new release (downloadable from the landing site).
 on:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  extension:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ steps.check.outputs.release }}
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: version
+        run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view "v${{ steps.version.outputs.version }}" \
+              --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release v${{ steps.version.outputs.version }} already exists; skipping."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  release:
+    needs: gate
+    if: needs.gate.outputs.release == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +53,12 @@ jobs:
       - run: pnpm build
       - run: pnpm check
       - run: pnpm --filter @watch-party-sync/extension zip
+      - run: pnpm --filter @watch-party-sync/extension zip:firefox
       - uses: softprops/action-gh-release@v2
         with:
-          files: extension/.output/watch-party-sync-*-chrome.zip
+          tag_name: v${{ needs.gate.outputs.version }}
+          name: Watch Party Sync v${{ needs.gate.outputs.version }}
+          generate_release_notes: true
+          files: |
+            extension/.output/watch-party-sync-*-chrome.zip
+            extension/.output/watch-party-sync-*-firefox.zip
