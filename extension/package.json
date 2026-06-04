@@ -8,7 +8,7 @@
     "build:firefox": "pnpm --filter @watch-party-sync/protocol build && wxt build -b firefox",
     "check": "wxt prepare && tsc --noEmit",
     "dev": "wxt",
-    "test": "wxt prepare && vitest run",
+    "test": "pnpm --filter @watch-party-sync/protocol build && wxt prepare && vitest run",
     "zip": "pnpm build && node scripts/package-extension.mjs chrome",
     "zip:firefox": "pnpm build:firefox && node scripts/package-extension.mjs firefox"
   },
