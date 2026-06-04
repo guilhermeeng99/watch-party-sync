@@ -1,8 +1,12 @@
 import { defineConfig } from "wxt";
 
+// Firefox requires a stable extension id under browser_specific_settings. WXT only emits it for
+// the firefox target; Chrome ignores it. Everything else is shared — the code uses wxt/browser,
+// so the same source runs on both, and WXT converts the manifest (background, action, host
+// permissions) to each browser's expected shape at build time.
 export default defineConfig({
   modules: ["@wxt-dev/module-react"],
-  manifest: {
+  manifest: ({ browser }) => ({
     name: "Watch Party Sync",
     short_name: "Watch Party",
     description: "Synchronize local playback with friends across official video players.",
@@ -35,5 +39,12 @@ export default defineConfig({
       page: "options.html",
       open_in_tab: true,
     },
-  },
+    ...(browser === "firefox"
+      ? {
+          browser_specific_settings: {
+            gecko: { id: "watch-party-sync@guilhermeeng99.github.io" },
+          },
+        }
+      : {}),
+  }),
 });

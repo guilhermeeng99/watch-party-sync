@@ -128,33 +128,44 @@ Users can still override this in the extension Options page for local or self-ho
 
 ## Install (manual / unpacked)
 
-The extension is **not** on the Chrome Web Store. Each user installs it manually. This is a
-one-time setup and takes about a minute.
+The extension is **not** on any web store. Each user installs it manually. There are separate
+builds for Chrome and Firefox; download the matching one from the
+[Releases page](https://github.com/guilhermeeng99/watch-party-sync/releases).
 
-1. Download the latest `watch-party-sync-<version>-chrome.zip` from the
-   [Releases page](https://github.com/guilhermeeng99/watch-party-sync/releases).
-2. Unzip it anywhere (e.g. `Documents\watch-party-sync`). You should get a folder containing a
+### Chrome / Edge / Brave (Chromium)
+
+1. Download `watch-party-sync-<version>-chrome.zip`.
+2. Unzip it anywhere (e.g. `Documents\watch-party-sync`). You get a folder containing a
    `manifest.json`.
-3. Open Chrome and go to `chrome://extensions`.
+3. Open `chrome://extensions`.
 4. Turn on **Developer mode** (top-right toggle).
 5. Click **Load unpacked** and select the unzipped folder.
 6. Pin the **Watch Party Sync** icon and open it on a YouTube or Crunchyroll video.
 
-> Chrome shows "Loaded an unpacked extension" / a developer-mode warning each launch. That is
-> normal for manually installed extensions and is safe to ignore.
+> Chrome shows a developer-mode warning each launch. That is normal for manually installed
+> extensions and is safe to ignore.
+
+### Firefox
+
+1. Download `watch-party-sync-<version>-firefox.zip` and unzip it.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on…** and select the `manifest.json` inside the unzipped folder.
+
+> **Caveat:** a temporary add-on is **removed when Firefox restarts** (you re-add it each time).
+> Permanent install requires a Mozilla-signed build (AMO), which is not used here.
 
 The build defaults to the hosted Render Free server. For a custom or self-hosted server, set that
-URL in the extension Options page; Chrome will ask for host access when the URL is saved.
+URL in the extension Options page (Chromium asks for host access when the URL is saved).
 
-### Building the package yourself
+### Building the packages yourself
 
 ```bash
-pnpm --filter @watch-party-sync/extension zip
+pnpm --filter @watch-party-sync/extension zip          # Chrome  -> *-chrome.zip
+pnpm --filter @watch-party-sync/extension zip:firefox   # Firefox -> *-firefox.zip
 ```
 
-This produces `extension/.output/watch-party-sync-<version>-chrome.zip` (the file to attach to a
-GitHub Release) and the loadable folder `extension/.output/chrome-mv3`. To load straight from a
-local build, point **Load unpacked** at `extension/.output/chrome-mv3`.
+Each zip nests the build under a single top-level folder. The loadable build dirs are
+`extension/.output/chrome-mv3` and `extension/.output/firefox-mv2`.
 
 See [PRIVACY.md](PRIVACY.md).
 

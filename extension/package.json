@@ -5,9 +5,11 @@
   "license": "MIT",
   "scripts": {
     "build": "pnpm --filter @watch-party-sync/protocol build && wxt build",
+    "build:firefox": "pnpm --filter @watch-party-sync/protocol build && wxt build -b firefox",
     "check": "wxt prepare && tsc --noEmit",
     "dev": "wxt",
-    "zip": "pnpm build && node scripts/package-extension.mjs"
+    "zip": "pnpm build && node scripts/package-extension.mjs chrome",
+    "zip:firefox": "pnpm build:firefox && node scripts/package-extension.mjs firefox"
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.2.8",
