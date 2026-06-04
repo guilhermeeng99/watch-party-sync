@@ -47,6 +47,13 @@ export default defineContentScript({
       }
 
       if (message.type === "content:apply-command") {
+        // Idempotency: the same command can arrive twice (snapshot replay + live broadcast, or a
+        // reconnect catch-up). Applying it once is enough; re-applying would re-seek/re-nudge.
+        if (message.command.commandId === lastAppliedCommandId) {
+          return Promise.resolve(ok(true));
+        }
+        lastAppliedCommandId = message.command.commandId;
+
         serverOffsetMs = message.serverOffsetMs;
         // Suppress intent until after the command actually applies on the player.
         const localApplyAt = message.command.applyAt - serverOffsetMs;
@@ -72,6 +79,8 @@ export default defineContentScript({
 let inRoom = false;
 let echoGuardUntil = 0;
 let lastIntent: { command: string; at: number } | undefined;
+// Last command we already applied, so a duplicate broadcast/replay is ignored (idempotency).
+let lastAppliedCommandId = "";
 
 function suppressIntentUntil(timestamp: number) {
   echoGuardUntil = Math.max(echoGuardUntil, timestamp);

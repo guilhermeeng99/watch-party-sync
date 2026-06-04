@@ -4,6 +4,12 @@ import { BaseVideoAdapter } from "./base-video-adapter";
 export class YouTubeAdapter extends BaseVideoAdapter {
   readonly id = "youtube" as const;
 
+  // YouTube is a single-page app that swaps videos via its own router without a popstate, so we
+  // listen for its bespoke navigation event to re-detect the media. Kept here, not in the base.
+  protected registerMediaChangeSources(onMediaChange: () => void, signal: AbortSignal) {
+    document.addEventListener("yt-navigate-finish", onMediaChange, { signal });
+  }
+
   async getMediaKey(): Promise<MediaKey> {
     const id = readYouTubeVideoId();
     if (!id) {

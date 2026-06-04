@@ -16,7 +16,9 @@ import {
   type ExtensionState,
   type ProviderDetection,
   type RuntimeRequest,
+  type RuntimeResponse,
   fail,
+  isRuntimeResponse,
   ok,
 } from "../src/shared/runtime-messages";
 import {
@@ -25,6 +27,7 @@ import {
   normalizeServerUrl,
 } from "../src/shared/server-permissions";
 import { loadSettings, saveSetting } from "../src/shared/storage";
+import { emitAck, emitWithAck, waitForConnect } from "../src/sync/room-emit";
 
 // Keep the MV3 service worker awake while a room is active. Chrome can suspend an idle
 // worker after ~30s, which would silently kill the socket and drop the member from the room.
@@ -172,6 +175,24 @@ async function handleMessage(message: RuntimeRequest, sender: { tab?: { id?: num
   return fail("Unsupported runtime message.");
 }
 
+type SnapshotAck =
+  | { ok: true; snapshot: RoomSnapshot }
+  | { ok: false; response: RuntimeResponse<never> };
+
+// A room action's ack must both succeed and carry a snapshot. Collapse the two failure branches
+// (server error vs missing snapshot) into one result so create/join/ready don't repeat them.
+function readSnapshotAck(ack: Ack): SnapshotAck {
+  if (!ack.ok) {
+    return { ok: false, response: fail(ack.message, ack.code) };
+  }
+
+  if (!ack.snapshot) {
+    return { ok: false, response: fail("Room snapshot missing.", "snapshot_missing") };
+  }
+
+  return { ok: true, snapshot: ack.snapshot };
+}
+
 async function createRoom(mode: RoomMode) {
   const detection = await requireDetection();
   if (!detection.supported) {
@@ -183,7 +204,7 @@ async function createRoom(mode: RoomMode) {
     return fail("Could not connect to room server.", "server_disconnected");
   }
 
-  const ack = await emitAck("room:create", {
+  const ack = await emitAck(socket, "room:create", {
     memberId: state.memberId,
     displayName: state.displayName,
     mode,
@@ -191,14 +212,12 @@ async function createRoom(mode: RoomMode) {
     mediaKey: detection.mediaKey,
   });
 
-  if (!ack.ok || !ack.snapshot) {
-    return fail(
-      ack.ok ? "Room snapshot missing." : ack.message,
-      ack.ok ? "snapshot_missing" : ack.code,
-    );
+  const result = readSnapshotAck(ack);
+  if (!result.ok) {
+    return result.response;
   }
 
-  await enterRoom(ack.snapshot);
+  await enterRoom(result.snapshot);
   return ok(state);
 }
 
@@ -210,21 +229,19 @@ async function joinRoom(roomCode: string) {
 
   // Joining does not require already being on the room's video; we redirect after joining.
   // We deliberately omit our own mediaKey so the server never rejects us for a media mismatch.
-  const ack = await emitAck("room:join", {
+  const ack = await emitAck(socket, "room:join", {
     roomCode: normalizeRoomCode(roomCode),
     memberId: state.memberId,
     displayName: state.displayName,
   });
 
-  if (!ack.ok || !ack.snapshot) {
-    return fail(
-      ack.ok ? "Room snapshot missing." : ack.message,
-      ack.ok ? "snapshot_missing" : ack.code,
-    );
+  const result = readSnapshotAck(ack);
+  if (!result.ok) {
+    return result.response;
   }
 
-  await enterRoom(ack.snapshot);
-  await redirectToRoomMedia(ack.snapshot).catch(() => undefined);
+  await enterRoom(result.snapshot);
+  await redirectToRoomMedia(result.snapshot).catch(() => undefined);
   return ok(state);
 }
 
@@ -272,21 +289,19 @@ async function setReady(ready: boolean) {
   // Player state is optional: a member may toggle ready while their tab has no controllable
   // player yet (e.g. before the video has loaded), so don't fail the whole action on that.
   const playerState = await readActivePlayerState().catch(() => undefined);
-  const ack = await emitAck("member:ready", {
+  const ack = await emitAck(socket, "member:ready", {
     roomCode: state.room.code,
     memberId: state.memberId,
     ready,
     state: playerState,
   });
 
-  if (!ack.ok || !ack.snapshot) {
-    return fail(
-      ack.ok ? "Room snapshot missing." : ack.message,
-      ack.ok ? "snapshot_missing" : ack.code,
-    );
+  const result = readSnapshotAck(ack);
+  if (!result.ok) {
+    return result.response;
   }
 
-  state.room = ack.snapshot;
+  state.room = result.snapshot;
   if (playerState) {
     state.player = playerState;
   }
@@ -315,7 +330,7 @@ async function requestControl(
     }
   }
 
-  const ack = await emitAck("control:request", {
+  const ack = await emitAck(socket, "control:request", {
     roomCode: state.room.code,
     memberId: state.memberId,
     type,
@@ -380,7 +395,7 @@ async function ensureSocket(): Promise<boolean> {
   // called every ~1.5s while the popup is open); just wait for the existing one to come up.
   if (socket) {
     state.connectionStatus = "reconnecting";
-    return waitForConnect();
+    return waitForConnect(socket);
   }
 
   if (!(await hasServerHostAccess(state.serverUrl))) {
@@ -431,7 +446,7 @@ async function ensureSocket(): Promise<boolean> {
     exitRoom().catch(() => undefined);
   });
 
-  return waitForConnect();
+  return waitForConnect(socket);
 }
 
 function disconnectSocket() {
@@ -439,56 +454,6 @@ function disconnectSocket() {
   socket?.disconnect();
   socket = undefined;
   state.connectionStatus = "disconnected";
-}
-
-// Generic emit used by clock sync; resolves only when the server replies.
-function emitWithAck<T>(event: string, payload: unknown): Promise<T> {
-  return new Promise((resolve) => {
-    socket?.emit(event, payload, (ack: T) => resolve(ack));
-  });
-}
-
-// Emit a room event and always settle: a missing socket or a lost ack resolves a failed Ack
-// instead of hanging forever (which previously left the popup stuck on "connecting").
-function emitAck(event: string, payload: unknown): Promise<Ack> {
-  return new Promise((resolve) => {
-    if (!socket?.connected) {
-      resolve({ ok: false, code: "server_disconnected", message: "Not connected to server." });
-      return;
-    }
-
-    let settled = false;
-    const timer = setTimeout(() => {
-      if (settled) return;
-      settled = true;
-      resolve({ ok: false, code: "timeout", message: "Server did not respond. Try again." });
-    }, 12_000);
-
-    socket.emit(event, payload, (ack: Ack) => {
-      if (settled) return;
-      settled = true;
-      clearTimeout(timer);
-      resolve(ack);
-    });
-  });
-}
-
-function waitForConnect(): Promise<boolean> {
-  return new Promise((resolve) => {
-    if (socket?.connected) {
-      resolve(true);
-      return;
-    }
-
-    // Wait up to 15s for the first connect. A single transient connect_error is not treated as
-    // fatal — reconnection is on, so we let it retry and only give up on the timeout. This covers
-    // the slower first TLS+WebSocket handshake (e.g. a cold Render Free instance).
-    const timeout = setTimeout(() => resolve(false), 15_000);
-    socket?.once("connect", () => {
-      clearTimeout(timeout);
-      resolve(true);
-    });
-  });
 }
 
 function startClockSync() {
@@ -509,6 +474,7 @@ function stopClockSync() {
 async function syncClock() {
   const clientSentAt = Date.now();
   const pong = await emitWithAck<{ clientSentAt: number; serverAt: number }>(
+    socket,
     "clock:ping",
     clientSentAt,
   );
@@ -520,7 +486,7 @@ async function syncClock() {
 async function requestSnapshotAfterReconnect() {
   // After a transient reconnect with room state still cached, refresh from the snapshot.
   if (state.room) {
-    const ack = await emitAck("room:snapshot:request", state.room.code);
+    const ack = await emitAck(socket, "room:snapshot:request", state.room.code);
     if (ack.ok && ack.snapshot) {
       state.room = ack.snapshot;
       await broadcastStateToContent();
@@ -542,7 +508,7 @@ async function rejoinRoom(roomCode: string) {
     return;
   }
 
-  const ack = await emitAck("room:join", {
+  const ack = await emitAck(socket, "room:join", {
     roomCode: normalizeRoomCode(roomCode),
     memberId: state.memberId,
     displayName: state.displayName,
@@ -686,13 +652,13 @@ async function broadcastStateToContent() {
   }).catch(() => undefined);
 }
 
-async function sendToTab<T>(tabId: number, message: RuntimeRequest) {
-  return browser.tabs.sendMessage(tabId, message) as Promise<
-    | { ok: true; value: T }
-    | {
-        ok: false;
-        message: string;
-        code?: string;
-      }
-  >;
+// Validate the content script's reply instead of trusting its shape: a tab with no/old content
+// script can resolve to anything. Rejections (no content script at all) still surface to callers.
+async function sendToTab<T>(tabId: number, message: RuntimeRequest): Promise<RuntimeResponse<T>> {
+  const response = await browser.tabs.sendMessage(tabId, message);
+  if (!isRuntimeResponse<T>(response)) {
+    return fail("Malformed response from content script.");
+  }
+
+  return response;
 }

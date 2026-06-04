@@ -55,7 +55,7 @@ sharing, and no DRM or service-limit bypass.
 
 - 🚧 **E - YouTube MVP**: code exists for YouTube video-id detection, primary local video element
   control, playback state reads, play/pause/seek/rate operations, SPA route observation, room
-  membership, and command application. Public release `v0.1.2` supports both `youtube.com` and
+  membership, and command application. Public release `v0.2.0` supports both `youtube.com` and
   `www.youtube.com`. **Remaining:** validate with two Chrome profiles or two computers on real
   YouTube pages, including join, reload, route change, pause, seek, and reconnect.
 
@@ -77,7 +77,7 @@ sharing, and no DRM or service-limit bypass.
 - 🚧 **I - Open-source readiness**: initial hygiene is done: `README.md`, `CONTRIBUTING.md`,
   `SECURITY.md`, MIT license, issue templates, PR template, CI, Docker Compose, `.env.example`,
   privacy/compliance spec, design-system spec, Render deployment docs, and GitHub Release
-  `v0.1.2`. **Remaining:** screenshots/GIFs, manual install guide screenshots/polish, Chrome Web
+  `v0.2.0`. **Remaining:** screenshots/GIFs, manual install guide screenshots/polish, Chrome Web
   Store listing, and final project name.
 
 - 💡 **J - Netflix / Prime Video technical spikes**: not committed product features. Investigate
@@ -92,8 +92,8 @@ sharing, and no DRM or service-limit bypass.
 - ✅ `pnpm test` passes.
 - ✅ `pnpm build` passes.
 - ✅ `pnpm check` passes.
-- ✅ `pnpm --filter @watch-party-sync/extension zip` produces `watch-party-sync-0.1.2-chrome.zip`.
-- ✅ GitHub Release `v0.1.2` is published with the Chrome zip artifact.
+- ✅ `pnpm --filter @watch-party-sync/extension zip` produces `watch-party-sync-0.2.0-chrome.zip`.
+- ✅ GitHub Release `v0.2.0` is published with the Chrome zip artifact.
 - ✅ Markdown relative links validate.
 - ✅ Repo-authored text is ASCII except intentional roadmap/status icons.
 - 🚧 Manual YouTube browser validation with real provider pages.
@@ -103,7 +103,7 @@ sharing, and no DRM or service-limit bypass.
 
 ## Next / open
 
-- 🚧 Validate YouTube join with two Chrome profiles or two computers on `v0.1.2`.
+- 🚧 Validate YouTube join with two Chrome profiles or two computers on `v0.2.0`.
 - 🚧 Validate room sync through real play, pause, seek, reload, and reconnect flows over Render.
 - 🚧 Validate Crunchyroll with normal logged-in playback.
 - ⬜ Add screenshots/GIFs after real validation.

@@ -10,7 +10,9 @@ export async function createProviderAdapter(): Promise<ProviderAdapter | undefin
     return new YouTubeAdapter();
   }
 
-  if (host.endsWith("crunchyroll.com")) {
+  // Exact-host matching (same strategy as YouTube above) keeps host-permission scope tight and
+  // predictable instead of accepting arbitrary *.crunchyroll.com subdomains.
+  if (host === "www.crunchyroll.com" || host === "crunchyroll.com") {
     return new CrunchyrollAdapter();
   }
 

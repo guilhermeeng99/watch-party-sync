@@ -23,7 +23,7 @@ websites. They are intentionally isolated because streaming websites change ofte
 | Provider | Status | Strategy | Risk |
 |---|---|---|---|
 | YouTube | Implemented; public test validation ongoing | HTML5 video element; stable media key from video id; `youtube.com` and `www.youtube.com` hosts | Low |
-| Generic HTML5 | Adapter implemented; local wiring pending | Direct `<video>` control on local test/simple pages | Low |
+| Generic HTML5 | Adapter implemented and wired in the registry for localhost/127.0.0.1; demo page pending | Direct `<video>` control on local test/simple pages | Low |
 | Crunchyroll | Initial implementation; real-page validation pending | HTML5 video element if accessible; route detection | Medium |
 | Netflix | Backlog spike | Local player control only if accessible without bypass | High |
 | Prime Video | Backlog spike | Local player control only if accessible without bypass | High |
@@ -36,7 +36,7 @@ can control standard playback. It does not imply any access workaround.
 ## 2. Adapter Contract
 
 ```ts
-type DetectionResult =
+type ProviderDetection =
   | {
       supported: true;
       providerId: ProviderId;
@@ -49,14 +49,25 @@ type DetectionResult =
       reason: string;
     };
 
+// The DOM media event (or "interval" polling) that produced a state emission.
+// Lets the content script tell deliberate user actions apart from passive polling.
+type PlayerEventTrigger =
+  | "play"
+  | "pause"
+  | "seeked"
+  | "ratechange"
+  | "loadedmetadata"
+  | "durationchange"
+  | "interval";
+
 type PlayerEvent =
-  | { type: "state"; state: PlayerState }
+  | { type: "state"; state: PlayerState; trigger: PlayerEventTrigger }
   | { type: "mediachange"; mediaKey: MediaKey }
   | { type: "error"; code: string; message: string };
 
 interface ProviderAdapter {
   id: ProviderId;
-  detect(): Promise<DetectionResult>;
+  detect(): Promise<ProviderDetection>;
   getMediaKey(): Promise<MediaKey>;
   getState(): Promise<PlayerState>;
   play(): Promise<void>;

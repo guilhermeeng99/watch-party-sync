@@ -78,9 +78,12 @@ No media content, cookies, credentials, or account data may appear in server sta
 6. **Host mode** - only host may control playback. Members may request pause.
 7. **Scheduled commands** - server fills `issuedAt` and `applyAt` before broadcasting.
 8. **Validation** - malformed events are rejected and never broadcast.
-9. **Rate limiting** - noisy state reports and repeated control requests are rate-limited per
-   socket/member.
+9. **Rate limiting (PLANNED)** - rate-limiting of noisy state reports and repeated control
+   requests per socket/member is future work; the server does **not** rate-limit today.
 10. **No persistence** - MVP does not write room events to disk or database.
+11. **Command reason** - the server currently issues playback commands only with reason
+    `"user"`; the `drift`, `join`, and `reconnect` reason values exist in the schema but are
+    reserved and not emitted server-side yet.
 
 ---
 
@@ -93,7 +96,7 @@ No media content, cookies, credentials, or account data may appear in server sta
 | `EMPTY_ROOM_TTL_SECONDS` | number | `300` | Cleanup delay after last disconnect |
 | `COMMAND_DELAY_MS` | number | `1500` | Default future `applyAt` delay |
 | `CORS_ORIGIN` | string | `*` | Allowed clients |
-| `LOG_LEVEL` | enum | `info` | Server logs |
+| `LOG_LEVEL` | enum | `info` | Parsed but currently unused (reserved for future log-level control) |
 
 ---
 

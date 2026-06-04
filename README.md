@@ -1,5 +1,12 @@
 # Watch Party Sync
 
+### 🌐 [**watch-party-sync — visit the site →**](https://guilhermeeng99.github.io/watch-party-sync/)
+
+The landing page has the project overview and one-click downloads for the Chrome and Firefox
+builds. **Start there if you just want to install and use the extension.**
+
+---
+
 Working title for a free, open-source browser extension that keeps friends watching the same
 video in sync while each person watches through the official player on their own computer.
 
@@ -7,7 +14,7 @@ video in sync while each person watches through the official player on their own
 share accounts, share cookies, bypass DRM, or bypass a service's plan/device limits. Every
 viewer must already be able to play the video in their own browser session.
 
-> Status: public test release `v0.1.2` is published. The extension defaults to the hosted
+> Status: public test release `v0.2.0` is published. The extension defaults to the hosted
 > Render Free room server, YouTube supports both `youtube.com` and `www.youtube.com`, and
 > end-to-end multi-user validation is in progress.
 
@@ -21,7 +28,7 @@ Status: Done, In progress, Planned, Backlog. See [docs/ROADMAP.md](docs/ROADMAP.
 | Chrome extension shell | Done | Manifest V3, WXT, TypeScript |
 | Self-hosted realtime room server | Done | Node.js, TypeScript, Socket.IO |
 | YouTube sync MVP | Done | Public test build supports `youtube.com` and `www.youtube.com`; multi-user validation in progress |
-| Generic HTML5 video sync | In progress | Adapter exists; local content-script/demo wiring pending |
+| Generic HTML5 video sync | In progress | Adapter wired in the registry for localhost/127.0.0.1; only a demo/test page is pending |
 | Drift correction | Done | Rate nudge for small drift, seek for large drift |
 | Friend mode pause | Done | Members can play/pause/rate; host owns seek |
 | Crunchyroll connector | In progress | Initial adapter; real episode validation pending |

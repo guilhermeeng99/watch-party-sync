@@ -13,11 +13,8 @@ import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { browser } from "wxt/browser";
 import "../../src/styles.css";
-import type {
-  ExtensionState,
-  RuntimeRequest,
-  RuntimeResponse,
-} from "../../src/shared/runtime-messages";
+import { sendToRuntime as send } from "../../src/shared/messaging";
+import type { ExtensionState, RuntimeRequest } from "../../src/shared/runtime-messages";
 
 type ActionState = "idle" | "busy";
 
@@ -418,10 +415,6 @@ function ConnectionBadge({ status }: { status: string }) {
         ? "badge-warning"
         : "badge-danger";
   return <span className={`badge ${className}`}>{status}</span>;
-}
-
-async function send<T>(message: RuntimeRequest): Promise<RuntimeResponse<T>> {
-  return browser.runtime.sendMessage(message);
 }
 
 const rootElement = document.getElementById("root");

@@ -111,12 +111,19 @@ export function createSocketServer(httpServer: HttpServer, env: Env) {
       return ack?.({ ok: true });
     });
 
-    socket.on("clock:ping", (clientSentAt: number, ack?: AckFn) => {
+    socket.on("clock:ping", (raw: unknown, ack?: AckFn) => {
+      // Echo the client's timestamp back so it can estimate the round trip; fall back to our own
+      // clock if the boundary value isn't a finite number rather than echoing garbage.
+      const clientSentAt = typeof raw === "number" && Number.isFinite(raw) ? raw : Date.now();
       ack?.({ clientSentAt, serverAt: Date.now() });
     });
 
-    socket.on("room:snapshot:request", (roomCode: string, ack?: AckFn) => {
-      const result = store.getSnapshot(normalizeRoomCode(roomCode));
+    socket.on("room:snapshot:request", (raw: unknown, ack?: AckFn) => {
+      if (typeof raw !== "string") {
+        return ackError(ack, "invalid_payload", "Invalid room code.");
+      }
+
+      const result = store.getSnapshot(normalizeRoomCode(raw));
       if (!result.ok) {
         return ackStoreError(ack, result);
       }

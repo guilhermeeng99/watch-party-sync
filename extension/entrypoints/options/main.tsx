@@ -1,13 +1,9 @@
 import { CheckCircle2, Server, Shield } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { browser } from "wxt/browser";
 import "../../src/styles.css";
-import type {
-  ExtensionState,
-  RuntimeRequest,
-  RuntimeResponse,
-} from "../../src/shared/runtime-messages";
+import { sendToRuntime as send } from "../../src/shared/messaging";
+import type { ExtensionState, RuntimeRequest } from "../../src/shared/runtime-messages";
 import {
   normalizeServerUrl,
   requestServerHostAccess,
@@ -124,10 +120,6 @@ function OptionsApp() {
       </div>
     </main>
   );
-}
-
-async function send<T>(message: RuntimeRequest): Promise<RuntimeResponse<T>> {
-  return browser.runtime.sendMessage(message);
 }
 
 const rootElement = document.getElementById("root");

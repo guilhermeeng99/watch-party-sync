@@ -199,6 +199,9 @@ export function calculateNudgedRate(
   }
 
   const direction = driftMs < 0 ? 1 : -1;
+  // Map drift to a gentle proportional rate delta: every 10s of drift asks for ~1.0x of nudge,
+  // so typical sub-second drift yields a few-percent change, then clamp to maxRateNudge (0.05).
+  // The divisor keeps the correction smooth enough that viewers don't hear pitch/speed jumps.
   const nudge = Math.min(options.maxRateNudge, Math.abs(driftMs) / 10_000);
   return roundRate(baseRate + direction * nudge);
 }

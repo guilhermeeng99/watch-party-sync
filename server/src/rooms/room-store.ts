@@ -18,6 +18,20 @@ import {
 
 const ROOM_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
+// Derive the command's paused flag from the control type. play/seek always resume, pause always
+// pauses, and a rate change preserves whatever pause state the issuer was already in.
+function resolvePaused(type: ControlRequest["type"], basePaused: boolean): boolean {
+  if (type === "pause") {
+    return true;
+  }
+
+  if (type === "rate") {
+    return basePaused;
+  }
+
+  return false;
+}
+
 export type RoomStoreOptions = {
   roomTtlMs: number;
   emptyRoomTtlMs: number;
@@ -218,16 +232,12 @@ export class RoomStore {
       mediaKey,
       position,
       playbackRate,
-      paused: request.type === "pause" || (request.type === "rate" && (baseState?.paused ?? false)),
+      paused: resolvePaused(request.type, baseState?.paused ?? false),
       issuedAt,
       applyAt: issuedAt + this.commandDelayMs,
       issuerMemberId: member.memberId,
       reason: "user",
     };
-
-    if (request.type === "play" || request.type === "seek") {
-      command.paused = false;
-    }
 
     room.lastCommand = command;
     const snapshot = this.snapshot(room);

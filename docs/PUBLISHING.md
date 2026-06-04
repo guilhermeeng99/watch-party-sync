@@ -41,8 +41,8 @@ Use this when you want friends to test before Chrome Web Store review.
 Current public release:
 
 ```text
-https://github.com/guilhermeeng99/watch-party-sync/releases/tag/v0.1.2
-https://github.com/guilhermeeng99/watch-party-sync/releases/download/v0.1.2/watch-party-sync-0.1.2-chrome.zip
+https://github.com/guilhermeeng99/watch-party-sync/releases/tag/v0.2.0
+https://github.com/guilhermeeng99/watch-party-sync/releases/download/v0.2.0/watch-party-sync-0.2.0-chrome.zip
 ```
 
 Future release command shape:
@@ -53,7 +53,7 @@ git add .
 git commit -m "Initial public release"
 gh repo create guilhermeeng99/watch-party-sync --public --source . --remote origin --push
 pnpm --filter @watch-party-sync/extension zip
-gh release create v0.1.2 extension/.output/watch-party-sync-0.1.2-chrome.zip --title "Watch Party Sync v0.1.2" --notes "Public test release with hosted Render server default and youtube.com host support."
+gh release create v0.2.0 extension/.output/watch-party-sync-0.2.0-chrome.zip --title "Watch Party Sync v0.2.0" --notes "Public test release with hosted Render server default and youtube.com host support."
 ```
 
 Friends can download the release zip. For manual install, they should unzip it and load the
@@ -113,7 +113,7 @@ Expected response:
 {"ok":true}
 ```
 
-The `v0.1.2` public test extension defaults to the current hosted server:
+The `v0.2.0` public test extension defaults to the current hosted server:
 
 ```text
 https://watch-party-sync-server.onrender.com
@@ -191,7 +191,7 @@ cookies, credentials, payment data, browsing history, analytics, or telemetry.
 
 ## 6. Release Checklist
 
-Current `v0.1.2` release verification completed:
+Current `v0.2.0` release verification completed:
 
 - [x] `pnpm test`
 - [x] `pnpm build`

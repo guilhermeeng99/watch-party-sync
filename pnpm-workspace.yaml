@@ -2,6 +2,10 @@ packages:
   - "extension"
   - "server"
   - "packages/*"
+overrides:
+  # Patch a path-traversal advisory (GHSA-ph9p-34f9-6g65) in a build-only transitive dep
+  # (wxt > web-ext-run > tmp). Dev/build tooling only; never shipped in the extension.
+  tmp@<0.2.6: ">=0.2.6"
 allowBuilds:
   '@biomejs/biome': true
   esbuild: true

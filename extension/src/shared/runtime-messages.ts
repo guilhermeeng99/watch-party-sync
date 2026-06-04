@@ -80,3 +80,14 @@ export function ok<T>(value: T): RuntimeResponse<T> {
 export function fail(message: string, code?: string): RuntimeResponse<never> {
   return { ok: false, message, code };
 }
+
+// Validate the shape of a runtime-message reply before trusting it, instead of casting blindly.
+// Cross-context messages (a tab with no content script, a stale page) can resolve to anything.
+export function isRuntimeResponse<T = unknown>(value: unknown): value is RuntimeResponse<T> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "ok" in value &&
+    typeof (value as { ok: unknown }).ok === "boolean"
+  );
+}

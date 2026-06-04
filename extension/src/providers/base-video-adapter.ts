@@ -90,8 +90,10 @@ export abstract class BaseVideoAdapter implements ProviderAdapter {
       });
     }
 
-    document.addEventListener("yt-navigate-finish", emitMediaChange, { signal: controller.signal });
+    // popstate is the generic SPA navigation signal; provider-specific signals are added by the
+    // concrete adapter so YouTube/Crunchyroll page quirks don't leak into this shared base.
     window.addEventListener("popstate", emitMediaChange, { signal: controller.signal });
+    this.registerMediaChangeSources(emitMediaChange, controller.signal);
     const intervalId = window.setInterval(() => {
       emitState("interval");
       emitMediaChange();
@@ -104,6 +106,10 @@ export abstract class BaseVideoAdapter implements ProviderAdapter {
   }
 
   dispose() {}
+
+  // Hook for provider-specific media-change signals (e.g. framework SPA navigation events).
+  // Base wires only the generic popstate; subclasses override to add their own listeners.
+  protected registerMediaChangeSources(_onMediaChange: () => void, _signal: AbortSignal) {}
 
   protected findVideo(): HTMLVideoElement | undefined {
     const videos = [...document.querySelectorAll("video")];

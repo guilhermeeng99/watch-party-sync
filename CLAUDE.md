@@ -39,8 +39,8 @@ extension/
     options/            # server URL, debug toggles, advanced settings
   src/
     providers/          # ProviderAdapter implementations
-    sync/               # room client, protocol types, clock sync, drift correction
-    ui/                 # React components used by popup/options/overlay
+    sync/               # drift correction (apply-command) + low-level socket emit/ack helpers
+    ui/                 # overlay.ts: vanilla shadow-root overlay (React UI lives in entrypoints/)
     shared/             # typed helpers, validation, logging
 
 server/
@@ -78,14 +78,14 @@ Each provider implements the contract described in
 ```ts
 interface ProviderAdapter {
   id: ProviderId;
-  detect(): Promise<DetectionResult>;
+  detect(): Promise<ProviderDetection>;
   getMediaKey(): Promise<MediaKey>;
   getState(): Promise<PlayerState>;
-  play(at?: number): Promise<void>;
-  pause(at?: number): Promise<void>;
+  play(): Promise<void>;
+  pause(): Promise<void>;
   seek(seconds: number): Promise<void>;
   setPlaybackRate(rate: number): Promise<void>;
-  subscribe(listener: PlayerEventListener): Unsubscribe;
+  subscribe(listener: (event: PlayerEvent) => void): Unsubscribe;
   dispose(): void;
 }
 ```

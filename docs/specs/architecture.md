@@ -35,9 +35,13 @@ Current repo shape:
 ```text
 extension/
   entrypoints/
-  src/providers/
-  src/sync/
-  src/ui/
+    background.ts       # service worker: socket connection, clock sync, room recovery (sync client lives here)
+    content.ts          # provider detection, page bridge, command application
+    popup/              # React popup UI
+    options/            # React options UI
+  src/providers/        # ProviderAdapter implementations
+  src/sync/             # apply-command.ts (drift correction) + room-emit.ts (socket emit/ack helpers)
+  src/ui/               # overlay.ts (vanilla shadow-root overlay only)
   src/shared/
 server/
   src/index.ts
@@ -50,6 +54,12 @@ docs/
   ROADMAP.md
   specs/
 ```
+
+The realtime sync client (socket connection, clock sync, room snapshot recovery) lives in
+`entrypoints/background.ts`. `src/sync/` holds only drift correction (`apply-command.ts`) and
+low-level socket emit/ack helpers (`room-emit.ts`). The popup and options React UI live under
+`entrypoints/popup/` and `entrypoints/options/`; `src/ui/` contains only the vanilla-DOM
+shadow-root overlay (`overlay.ts`).
 
 ---
 
@@ -206,7 +216,9 @@ The extension must handle:
 ### Security
 
 Validate all socket payloads on the server. Reject commands from members who lack permission
-for the current room mode. Rate-limit noisy events such as state reports and control requests.
+for the current room mode. Rate-limiting of noisy events such as state reports and control
+requests is **planned / not yet implemented** — the server does no per-socket or per-member
+rate limiting today.
 
 ### Provider Support Policy
 

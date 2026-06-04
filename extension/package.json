@@ -8,6 +8,7 @@
     "build:firefox": "pnpm --filter @watch-party-sync/protocol build && wxt build -b firefox",
     "check": "wxt prepare && tsc --noEmit",
     "dev": "wxt",
+    "test": "vitest run",
     "zip": "pnpm build && node scripts/package-extension.mjs chrome",
     "zip:firefox": "pnpm build:firefox && node scripts/package-extension.mjs firefox"
   },
@@ -25,6 +26,7 @@
     "@wxt-dev/module-react": "^1.1.3",
     "fflate": "^0.8.3",
     "typescript": "^5.9.3",
+    "vitest": "^4.1.8",
     "wxt": "^0.20.8"
   }
 }
