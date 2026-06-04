@@ -9,6 +9,8 @@ export type StoredSettings = {
   memberId: string;
   displayName: string;
   debug: boolean;
+  // Code of the room the worker should rejoin after an MV3 restart. Empty when not in a room.
+  activeRoomCode: string;
 };
 
 export async function loadSettings(): Promise<StoredSettings> {
@@ -17,6 +19,7 @@ export async function loadSettings(): Promise<StoredSettings> {
     "memberId",
     "displayName",
     "debug",
+    "activeRoomCode",
     SERVER_URL_DEFAULT_MIGRATED_KEY,
   ]);
   const memberId = typeof stored.memberId === "string" ? stored.memberId : crypto.randomUUID();
@@ -40,6 +43,7 @@ export async function loadSettings(): Promise<StoredSettings> {
     memberId,
     displayName,
     debug: typeof stored.debug === "boolean" ? stored.debug : false,
+    activeRoomCode: typeof stored.activeRoomCode === "string" ? stored.activeRoomCode : "",
   };
 }
 

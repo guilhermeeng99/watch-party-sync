@@ -44,6 +44,7 @@ export type RuntimeRequest =
   | { type: "popup:create-room"; mode: RoomMode }
   | { type: "popup:join-room"; roomCode: string }
   | { type: "popup:leave-room" }
+  | { type: "popup:open-room-media" }
   | { type: "popup:set-ready"; ready: boolean }
   | {
       type: "popup:control";
@@ -57,6 +58,14 @@ export type RuntimeRequest =
   | { type: "content:set-room-state"; state: ExtensionState }
   | { type: "content:provider-detected"; detection: ProviderDetection }
   | { type: "content:player-state"; state: PlayerState }
+  | {
+      // A deliberate play/pause/seek/rate the user performed on the official player,
+      // forwarded so the server can broadcast it to the room.
+      type: "content:user-intent";
+      command: "play" | "pause" | "seek" | "rate";
+      position: number;
+      playbackRate: number;
+    }
   | { type: "content:media-change"; mediaKey: MediaKey }
   | { type: "content:error"; message: string };
 

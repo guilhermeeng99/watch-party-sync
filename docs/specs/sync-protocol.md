@@ -1,9 +1,9 @@
 # Sync Protocol Spec
 
-> **Status**: Implemented initial
-> **Last updated**: 2026-06-02
+> **Status**: Implemented
+> **Last updated**: 2026-06-04
 > **Environment**: both
-> **Coverage**: room events, playback commands, clock sync, drift correction
+> **Coverage**: room events, playback commands, clock sync, drift correction, native control capture
 
 The sync protocol defines how extension clients and the realtime server coordinate playback.
 It sends state and commands only. It never sends media content or provider credentials.
@@ -74,6 +74,20 @@ type PlaybackCommand = {
 | `clock:ping` | client send timestamp | Estimate server offset |
 | `room:snapshot:request` | room code | Recover after reconnect |
 
+### 2.1 Native control capture
+
+Users control playback on the official player itself, not only through the popup buttons. The
+content script subscribes to the player's `play`, `pause`, and `seeked` events and, when the
+member is in a room, forwards each as a `control:request` (an internal `content:user-intent`
+runtime message routed by the background worker). This is what makes "A presses play and B
+follows" work without anyone opening the popup.
+
+To avoid feedback loops, applying a remote command also fires those same DOM events. The content
+script therefore opens an **echo-guard window** from command receipt until `applyAt + 1500 ms`
+and ignores native events during it, so an applied command never rebroadcasts as a fresh intent.
+`ratechange` is deliberately not captured as an intent because drift correction nudges and
+restores the rate internally.
+
 ---
 
 ## 3. Server To Client Events
@@ -103,7 +117,11 @@ type PlaybackCommand = {
 9. **Late command handling** - if a command arrives after `applyAt`, apply immediately and
    calculate target position from elapsed server time.
 10. **Reconnect recovers from snapshot** - after reconnect, client requests snapshot before
-   applying new commands.
+   applying new commands. If the service worker fully restarted and lost room state, it rejoins
+   the persisted room code instead.
+11. **Late members catch up to `lastCommand`** - when a tab finishes detecting the room's media
+   (including after the join redirect), the client replays the room's last command so it snaps
+   to the current playback position/paused state.
 
 ---
 

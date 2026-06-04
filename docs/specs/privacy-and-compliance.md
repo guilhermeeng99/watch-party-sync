@@ -79,10 +79,11 @@ MVP permission principle: narrow and explainable.
 
 | Permission | MVP need |
 |---|---|
-| `storage` | Save server URL and user preferences |
+| `storage` | Save server URL, user preferences, and the active room code for worker recovery |
 | `activeTab` | Inspect/control current supported tab after user action where possible |
-| Specific host permissions | Run content scripts on supported providers |
-| `tabs` | Only if required for active tab routing; prefer avoiding it |
+| `alarms` | Keepalive heartbeat so the MV3 worker is not suspended mid-room |
+| Specific host permissions | Run content scripts on supported providers; navigate the active tab to the room's video on join; query open tabs by the room media URL to route commands |
+| `tabs` | Not requested. Tab routing uses `activeTab` plus host-permission tab queries instead |
 
 Host permissions should be added per provider:
 

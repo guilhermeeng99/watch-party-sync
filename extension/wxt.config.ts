@@ -6,7 +6,7 @@ export default defineConfig({
     name: "Watch Party Sync",
     short_name: "Watch Party",
     description: "Synchronize local playback with friends across official video players.",
-    version: "0.1.2",
+    version: "0.2.0",
     homepage_url: "https://github.com/guilhermeeng99/watch-party-sync",
     icons: {
       "16": "icons/icon-16.png",
@@ -14,7 +14,7 @@ export default defineConfig({
       "48": "icons/icon-48.png",
       "128": "icons/icon-128.png",
     },
-    permissions: ["storage", "activeTab"],
+    permissions: ["storage", "activeTab", "alarms"],
     host_permissions: [
       "https://www.youtube.com/*",
       "https://youtube.com/*",

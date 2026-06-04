@@ -1,9 +1,10 @@
 # Browser Extension Spec
 
-> **Status**: Implemented initial
-> **Last updated**: 2026-06-02
+> **Status**: Implemented
+> **Last updated**: 2026-06-04
 > **Environment**: extension
-> **Coverage**: Chrome MVP shell, popup, content script, provider bridge, overlay, permissions
+> **Coverage**: Chrome MVP shell, popup, content script, provider bridge, overlay, permissions,
+> worker keepalive, join redirect
 
 The browser extension is the user's local client. It detects a supported player, joins a room,
 applies scheduled playback commands, reports local state, and exposes a small UI for room
@@ -97,19 +98,27 @@ Layer ownership:
 
 ## 4. Business Rules
 
-1. **No auto-join** - opening a video page never joins a room by itself.
+1. **No auto-join** - opening a video page never joins a room by itself. Joining is always an
+   explicit user action (create button or entering a room code).
 2. **No auto-control before ready** - remote commands are ignored until the provider adapter
    reports a controllable player and the member has joined the room.
-3. **Same media check** - joining a room with a different `mediaKey` should warn or block
-   according to room policy.
+3. **Join redirects to the room's media** - joining no longer requires the user to already be on
+   the host's video. After a successful join the active tab is navigated to `room.mediaKey.url`
+   (a new tab is opened only if there is no active tab). The joiner sends no `mediaKey`, so the
+   server never rejects the join for a media mismatch. The host still defines the room's media on
+   create.
 4. **One active tab per room member** - if multiple supported tabs are open, the popup must let
    the user choose or use the active tab only.
 5. **Route changes re-detect** - provider adapters must handle single-page navigation.
 6. **Unsupported provider is explicit** - show a clear unsupported state, not a broken room UI.
 7. **No credential access** - adapter code must not read cookies, auth headers, DRM internals,
    localStorage tokens, or account details.
-8. **Local controls still work** - if a user presses pause in the official player, the adapter
-   reports it and room policy decides whether to broadcast it.
+8. **Local controls still work** - if a user presses play/pause/seek in the official player, the
+   content script forwards it as a `control:request` and room policy decides whether to broadcast
+   it. An echo guard prevents an applied remote command from rebroadcasting as a new intent.
+9. **Worker stays alive in a room** - while a member is in a room, a `chrome.alarms` keepalive
+   (~24s) keeps the MV3 service worker from being suspended. The active room code is persisted so
+   a restarted worker reconnects and rejoins automatically.
 
 ---
 

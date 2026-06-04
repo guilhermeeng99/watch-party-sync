@@ -1,14 +1,11 @@
 # Publishing Guide
 
-> Status: Ready for public testing package.
-> Last updated: 2026-06-02.
+> Status: Manual / unpacked distribution.
+> Last updated: 2026-06-04.
 
-This project has two release paths:
-
-1. **GitHub public testing**: immediate. Share the source code and the generated Chrome extension
-   zip through a GitHub Release.
-2. **Chrome Web Store**: public distribution after Google review. Use the same generated zip, but
-   submit it through the Chrome Developer Dashboard.
+Distribution is **manual install only** — the extension is not on the Chrome Web Store (avoids the
+paid developer account and review). Users download the zip from a GitHub Release and load it
+unpacked. The Chrome Web Store path is left as optional future work; see section 5.
 
 ## 1. Build The Extension Zip
 
@@ -19,10 +16,10 @@ pnpm --filter @watch-party-sync/extension zip
 Output:
 
 ```text
-extension/.output/watch-party-sync-0.1.2-chrome.zip
+extension/.output/watch-party-sync-0.2.0-chrome.zip
 ```
 
-The zip is the file to upload to GitHub Releases or the Chrome Web Store.
+Attach this zip to a GitHub Release; users download and unzip it.
 
 ## 2. Local Unpacked Testing
 

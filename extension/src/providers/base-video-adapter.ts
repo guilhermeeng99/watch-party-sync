@@ -1,8 +1,15 @@
 import type { MediaKey, ProviderId } from "@watch-party-sync/protocol";
 import type { ProviderDetection } from "../shared/runtime-messages";
-import type { PlayerEvent, ProviderAdapter } from "./types";
+import type { PlayerEvent, PlayerEventTrigger, ProviderAdapter } from "./types";
 
-const PLAYER_EVENTS = ["play", "pause", "seeked", "ratechange", "loadedmetadata", "durationchange"];
+const PLAYER_EVENTS: PlayerEventTrigger[] = [
+  "play",
+  "pause",
+  "seeked",
+  "ratechange",
+  "loadedmetadata",
+  "durationchange",
+];
 
 export abstract class BaseVideoAdapter implements ProviderAdapter {
   abstract readonly id: ProviderId;
@@ -59,9 +66,9 @@ export abstract class BaseVideoAdapter implements ProviderAdapter {
 
   subscribe(listener: (event: PlayerEvent) => void) {
     const controller = new AbortController();
-    const emitState = () => {
+    const emitState = (trigger: PlayerEventTrigger) => {
       this.getState()
-        .then((state) => listener({ type: "state", state }))
+        .then((state) => listener({ type: "state", state, trigger }))
         .catch((error) =>
           listener({ type: "error", code: "state_failed", message: String(error) }),
         );
@@ -78,13 +85,15 @@ export abstract class BaseVideoAdapter implements ProviderAdapter {
     };
 
     for (const eventName of PLAYER_EVENTS) {
-      this.requireVideo().addEventListener(eventName, emitState, { signal: controller.signal });
+      this.requireVideo().addEventListener(eventName, () => emitState(eventName), {
+        signal: controller.signal,
+      });
     }
 
     document.addEventListener("yt-navigate-finish", emitMediaChange, { signal: controller.signal });
     window.addEventListener("popstate", emitMediaChange, { signal: controller.signal });
     const intervalId = window.setInterval(() => {
-      emitState();
+      emitState("interval");
       emitMediaChange();
     }, 1000);
 

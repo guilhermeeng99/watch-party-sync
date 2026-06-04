@@ -344,3 +344,38 @@ button:disabled {
 .compact-controls {
   gap: 6px;
 }
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--slate-blue);
+  font-size: 12px;
+  text-transform: none;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--outline-gray);
+}
+
+.code-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.code-display {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--glacier-blue);
+  background: var(--pale-gray);
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-align: center;
+}

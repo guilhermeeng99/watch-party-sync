@@ -70,11 +70,12 @@ watch-party-sync/
 
 High-level flow:
 
-1. A user opens a supported video page.
-2. The extension detects the provider and local player.
-3. A user creates or joins a room.
+1. The host opens a supported video page and creates a room.
+2. Friends enter the room code; the extension opens the host's video for them automatically.
+3. Anyone plays, pauses, or seeks **on the video itself** — the extension forwards it as a
+   control request.
 4. The server relays room state and scheduled playback commands.
-5. Each extension applies commands to its local official player.
+5. Each extension applies commands to its local official player (with drift correction).
 6. Clients report state back so the room can detect readiness and drift.
 
 See [docs/specs/architecture.md](docs/specs/architecture.md).
@@ -92,7 +93,7 @@ See [docs/specs/architecture.md](docs/specs/architecture.md).
 | Server | Node.js + TypeScript |
 | Runtime validation | Zod |
 | Storage | None in MVP; in-memory rooms only |
-| Distribution | GitHub public test releases first; Chrome Web Store after review |
+| Distribution | Manual unpacked install via GitHub Releases (no Chrome Web Store) |
 | License | MIT |
 
 ## Local Development
@@ -125,29 +126,37 @@ https://watch-party-sync-server.onrender.com
 
 Users can still override this in the extension Options page for local or self-hosted testing.
 
-## Public Testing
+## Install (manual / unpacked)
 
-Build the Chrome extension package:
+The extension is **not** on the Chrome Web Store. Each user installs it manually. This is a
+one-time setup and takes about a minute.
+
+1. Download the latest `watch-party-sync-<version>-chrome.zip` from the
+   [Releases page](https://github.com/guilhermeeng99/watch-party-sync/releases).
+2. Unzip it anywhere (e.g. `Documents\watch-party-sync`). You should get a folder containing a
+   `manifest.json`.
+3. Open Chrome and go to `chrome://extensions`.
+4. Turn on **Developer mode** (top-right toggle).
+5. Click **Load unpacked** and select the unzipped folder.
+6. Pin the **Watch Party Sync** icon and open it on a YouTube or Crunchyroll video.
+
+> Chrome shows "Loaded an unpacked extension" / a developer-mode warning each launch. That is
+> normal for manually installed extensions and is safe to ignore.
+
+The build defaults to the hosted Render Free server. For a custom or self-hosted server, set that
+URL in the extension Options page; Chrome will ask for host access when the URL is saved.
+
+### Building the package yourself
 
 ```bash
 pnpm --filter @watch-party-sync/extension zip
 ```
 
-Use the generated `extension/.output/watch-party-sync-0.1.2-chrome.zip` in either:
+This produces `extension/.output/watch-party-sync-<version>-chrome.zip` (the file to attach to a
+GitHub Release) and the loadable folder `extension/.output/chrome-mv3`. To load straight from a
+local build, point **Load unpacked** at `extension/.output/chrome-mv3`.
 
-- a GitHub Release for immediate public testing;
-- the Chrome Developer Dashboard for Chrome Web Store review.
-
-The public test build defaults to the hosted Render Free server. For a custom server, set that URL
-in the extension Options page. Chrome will ask for host access to that server when the URL is saved.
-
-Current public release:
-
-```text
-https://github.com/guilhermeeng99/watch-party-sync/releases/tag/v0.1.2
-```
-
-See [docs/PUBLISHING.md](docs/PUBLISHING.md) and [PRIVACY.md](PRIVACY.md).
+See [PRIVACY.md](PRIVACY.md).
 
 ### Render Free Server
 
